@@ -27,7 +27,9 @@ namespace sibelApi
 
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                string token = sibel.Login("test", "123456", "146116");
+                var restoranListe = sibel.RestoranListesiGetir(token);
+                await context.Response.WriteAsync("test");
             });
         }
     }
