@@ -121,5 +121,24 @@ namespace sibelApi
             }
 
         }
+
+        public static List<Entity.RestoranAlacarte> AlacarteListeGetir(string unitID, string unitKey, DateTime tarih, string token)
+        {
+            string restoranLink = apiLink + String.Format("admin/unit/{0}?key={1}&date={2}", unitID, unitKey, tarih.ToString("yyyy-MM-dd"));
+            var headers = new WebHeaderCollection();
+            headers.Add("token", token);
+
+            string response = postHeader(restoranLink, headers);
+
+            if (response != "-1")
+            {
+                var result = JsonConvert.DeserializeObject<List<Entity.RestoranAlacarte>>(response);
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
