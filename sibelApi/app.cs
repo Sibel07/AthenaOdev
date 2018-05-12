@@ -16,7 +16,7 @@ namespace sibelApi
     {
         public static string apiLink = "http://213.142.146.52:6161/athenaservices/alacarte/api/v2/";
         private static readonly HttpClient client = new HttpClient();
-        public static string postJSON(string link, string values)
+        public static string postJSON(string link, string values, bool herturluGetir = false)
         {
             try
             {
@@ -44,9 +44,15 @@ namespace sibelApi
             {
                 if (ex.Status == WebExceptionStatus.ProtocolError)
                 {
-                    var responseString = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
-                    //return responseString; //status kodu değişik olsa bile response almak istiyorsak eğer.
-                    return "-1";
+                    if (herturluGetir == true)
+                    {
+                        var responseString = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+                        return responseString;
+                    }
+                    else
+                    {
+                        return "-1";
+                    }
                 }
                 else
                 {
@@ -56,7 +62,7 @@ namespace sibelApi
 
         }
 
-        public static string postHeader(string link, WebHeaderCollection headerData) //GET işlemi ile aynı sadece değerler header'den gidiyor.
+        public static string postHeader(string link, WebHeaderCollection headerData, bool herturlugetir = false) //GET işlemi ile aynı sadece değerler header'den gidiyor.
         {
             try
             {
@@ -76,9 +82,61 @@ namespace sibelApi
             {
                 if (ex.Status == WebExceptionStatus.ProtocolError)
                 {
-                    var responseString = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
-                    //return responseString; //status kodu değişik olsa bile response almak istiyorsak eğer.
+                    if (herturlugetir == true)
+                    {
+                        var responseString = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+                        return responseString;
+                    }
+                    else
+                    {
+                        return "-1";
+                    }
+                }
+                else
+                {
                     return "-1";
+                }
+            }
+        }
+
+        public static string postHeaderData(string link, string values, WebHeaderCollection headerData, bool herturlugetir = false) //GET işlemi ile aynı sadece değerler header'den gidiyor.
+        {
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create(link);
+                var postData = values;
+                var data = Encoding.ASCII.GetBytes(postData);
+
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                request.ContentLength = data.Length;
+
+                using (var stream = request.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+
+                request.Headers.Add(headerData);
+
+                var response = (HttpWebResponse)request.GetResponse();
+
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
+                return responseString;
+            }
+            catch (WebException ex)
+            {
+                if (ex.Status == WebExceptionStatus.ProtocolError)
+                {
+                    if (herturlugetir == true)
+                    {
+                        var responseString = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+                        return responseString;
+                    }
+                    else
+                    {
+                        return "-1";
+                    }
                 }
                 else
                 {
@@ -132,13 +190,65 @@ namespace sibelApi
 
             if (response != "-1")
             {
-                var result = JsonConvert.DeserializeObject<List<Entity.RestoranAlacarte>>(response);
-                return result;
+                if (response.StartsWith("["))
+                {
+                    var result = JsonConvert.DeserializeObject<List<Entity.RestoranAlacarte>>(response);
+                    return result;
+                }
+                else
+                {
+                    var result = JsonConvert.DeserializeObject<Entity.RestoranAlacarte>(response);
+                    var tmp = new List<Entity.RestoranAlacarte>();
+                    tmp.Add(result);
+                    return tmp;
+                }
             }
             else
             {
                 return null;
             }
+        }
+
+        public static Entity.RezervasyonResult RezervasyonYap(Entity.Rezervasyon rezervasyon, string token)
+        {
+
+            string restoranLink = apiLink + "reservation";
+            var headers = new WebHeaderCollection();
+            headers.Add("token", token);
+
+            var rezervasyonData = new Entity.Rezervasyon
+            {
+                hotelId = 1,
+                UnitId = 14,
+                date = "2018-05-14",
+                time = "08:00-23:00",
+                reservationAdult = 1,
+                reservationChild = 0,
+                reservationNote = "Mobilden girilmeyen rezervasyon",
+                guest = new Entity.RezervasyonGuest()
+                {
+                    hotelCode = "GGR",
+                    roomNumber = "999",
+                    folio = 123,
+                    firstName = "Sibel",
+                    lastName = "Özkaynak",
+                    title = "MR",
+                    gender = "0",
+                    country = "TR",
+                    adult = 1,
+                    child = 0,
+                    arrivalDate = "2018-04-11",
+                    departureDate = "2018-04-20",
+                    panTip = "VIP",
+                    nights = 10
+                }
+            };
+
+            string rezervasyonDataJSON = JsonConvert.SerializeObject(rezervasyonData);
+
+            string response = postHeaderData(restoranLink, rezervasyonDataJSON, headers, true);
+
+            return JsonConvert.DeserializeObject<Entity.RezervasyonResult>(response);
         }
     }
 }
