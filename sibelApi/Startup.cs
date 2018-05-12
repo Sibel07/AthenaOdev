@@ -34,6 +34,7 @@ namespace sibelApi
                     var loginResult = JsonConvert.DeserializeObject<Entity.Login>(token);
                     var restoranListe = sibel.RestoranListesiGetir(loginResult.token);
                     var alacarteListe = sibel.AlacarteListeGetir("14", "07a8371e-d72f-477c-9fe5-6324d524b5d6", DateTime.Now, loginResult.token);
+                    var rezervasyon = sibel.RezervasyonYap(new Entity.Rezervasyon(), loginResult.token);
                     await context.Response.WriteAsync("test");
                 }
                 else
