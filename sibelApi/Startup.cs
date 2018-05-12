@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace sibelApi
 {
@@ -28,8 +29,19 @@ namespace sibelApi
             app.Run(async (context) =>
             {
                 string token = sibel.Login("test", "123456", "146116");
-                var restoranListe = sibel.RestoranListesiGetir(token);
-                await context.Response.WriteAsync("test");
+                if (token != "-1")
+                {
+                    var loginResult = JsonConvert.DeserializeObject<Entity.Login>(token);
+                    var restoranListe = sibel.RestoranListesiGetir(loginResult.token);
+                    await context.Response.WriteAsync("test");
+                }
+                else
+                {
+                    await context.Response.WriteAsync("Kullanıcı adı şifreniz hatalı!");
+
+                    //Geçersiz kullanıcı adı & şifre
+                }
+
             });
         }
     }

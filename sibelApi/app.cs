@@ -104,14 +104,22 @@ namespace sibelApi
 
         public static List<Entity.RestoranList> RestoranListesiGetir(string token)
         {
-            var ret = new List<Entity.RestoranList>();
+            string restoranLink = apiLink + "admin/unit/list?code=GGR"; //GGR yazan kısım burda hotel kodu
+            var headers = new WebHeaderCollection();
+            headers.Add("token", token);
 
-            string loginLink = apiLink + "admin/unit/list?code=GGR"; //GGR yazan kısım burda hotel kodu
+            string response = postHeader(restoranLink, headers);
 
+            if (response != "-1")
+            {
+                var result = JsonConvert.DeserializeObject<List<Entity.RestoranList>>(response);
+                return result;
+            }
+            else
+            {
+                return null;
+            }
 
-            return "x";
         }
-
-
     }
 }
