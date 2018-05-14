@@ -222,15 +222,11 @@
 
 
             var currentdate = new Date(); // günün tarihine göre rezervasyon işlemi
-            var datetime = currentdate.getDate() + "/"
-                + (currentdate.getMonth() + 1) + "/"
-                + currentdate.getFullYear();
-          
+            var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate();
 
             $.ajax({
-                url: '@Url.Action("AlacaCarteList", "Home")',
-                type: 'POST',
-                data: { unitID: unitId, unitKey: unitKey, DateTime: datetime },
+                url: "/Home/AlacaCarteList?unitID=" + unitId + "&unitKey=" + unitKey + "&DateTime=" + datetime,
+                type: 'GET',
                 //datatype: 'json',
                 success: function (result) {
                     debugger;
@@ -243,9 +239,9 @@
                     $("input[name$='unitId']").val(result.result[0].unitId);
                     $("input[name$='unitKey']").val(result.result[0].unitKey);
                     $('#times').empty();
-                    for (i = 0; i < result.result[0].paramz.length; i++)
+                    for (i = 0; i < result.result[0].params.length; i++)
                     { 
-                        $('#times').append( '<option value="'+result.result[0].paramz[i].desc+'">'+result.result[0].paramz[i].desc+'</option>' );
+                        $('#times').append( '<option value="'+result.result[0].params[i].desc+'">'+result.result[0].params[i].desc+'</option>' );
                     }                
                    
                 }

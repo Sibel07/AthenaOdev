@@ -25,7 +25,7 @@ namespace sibelApi.wwwroot
         {
             login = JsonConvert.DeserializeObject<Login>(sibel.Login("test", "123456", "146116"));
             var alacartList = sibel.AlacarteListeGetir(unitID, unitKey, Convert.ToDateTime(DateTime), login.token);
-            return Json(new { result = alacartList, date = Convert.ToDateTime(DateTime).ToString("dd-MM-yyyy") });
+            return Json(new { result = alacartList, date = Convert.ToDateTime(DateTime).ToString("yyyy-MM-dd") });
         }
 
         public JsonResult RezervasyonSave(Rezervasyon model)
