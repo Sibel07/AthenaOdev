@@ -1,0 +1,318 @@
+﻿@model List<sibelApi.Entity.RestoranList>
+@{
+    ViewBag.Title = "Restorant Listesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+
+    <div>
+        <h2>Restorantlar</h2>
+    </div>
+    <table class="table table-striped" id="datatable">
+        <thead>
+            <tr>
+                <th>Kodu </th>
+                <th>Açıklama</th>
+                @*<th scope="col">Otel Id</th>
+                    <th scope="col">Birim ID</th>
+                    <th scope="col">Birimkey</th>*@
+                @*<th scope="col">işlem</th>*@
+                <th scope="col">işlem</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (Model.Count > 0)
+            {
+                for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <th>@Model[i].code</th>
+                        <th>@Model[i].description</th>
+                        @*<th scope="row">@Model[i].hotelId</th>
+                            <th scope="row">@Model[i].unitId</th>
+                            <th scope="row">@Model[i].unitKey</th>*@
+                        @*<th><button onclick="RezervasyonPopup()"> Rezervasyon Yap</button></th>*@
+                        <th>
+                            <button type="button" class="btn btn-info" data-toggle="modal" onclick="RezervasyonPopup(@Model[i].unitId,'@Model[i].unitKey')" data-target="#myModalDateControl">Rezervasyon Yap</button>
+                        </th>
+
+                    </tr>
+                }
+            }
+
+
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Rezervasyon Oluştur</h4>
+            </div>
+            <div class="modal-body">
+                <p id="name">Rezervasyon işlemini gerçekleştirmek için bilgileri giriniz..</p>
+                <form id="myForm">
+
+                   
+
+
+                    @*<div class="form-group">
+                        <label for="email">Otel İsmi:</label>
+                        <input type="email" disabled class="form-control" name="description">
+                    </div>*@
+                    <div class="form-group">
+                        <label for="email">Restorant İsmi:</label>
+                        <input type="text" class="form-control" name="restorantName">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Tarih:</label>
+                        <input type="text" class="form-control" name="date" >
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Saat:</label>
+                        <input type="text" class="form-control" name="time">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Yetişkin sayısı:</label>
+                        <input type="number" class="form-control" name="reservationAdult">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Çocuk sayısı:</label>
+                        <input type="number" class="form-control" name="reservationChild">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Rezervasyon Notu:</label>
+                        <input type="text" class="form-control" name="reservationNote" placeholder="Mobilden Girilen rexervasyon">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Müşteri Adı:</label>
+                        <input type="text" class="form-control" name="firstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Müşteri Soyadı:</label>
+                        <input type="text" class="form-control" name="lastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Cinsiyet:</label>
+                        <select class="form-control" name="gender">
+                            <option value="0"> Belirtilmemiş</option>
+                            <option value="1"> Erkek</option>
+                            <option value="2"> Bayan</option>
+                        </select>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="RezervasyonSave()" > Rezervasyon Kaydet</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModalDateControl" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Rezervasyon Oluştur</h4>
+            </div>
+            <div class="modal-body">
+                <p id="name">Rezervasyon işlemini gerçekleştirmek için bilgileri giriniz..</p>
+                <form id="myForm1">
+                    <input type="hidden" name="code" />
+                    <input type="hidden" name="description" />
+                    <input type="hidden" name="hotelId" />
+                    <input type="hidden" name="unitId" />
+                    <input type="hidden" name="unitKey" />
+                    <input type="hidden" name="code" />
+                    
+                    <div class="form-group">
+                        <label for="email">Restorant Adı</label>
+                        <input type="email" class="form-control" name="description" id="RestorantName" placeholder="Mobilden Girilen rexervasyon">
+                    </div>
+                  
+                    <div class="form-group">
+                        <label for="email">Tarih</label>
+                        <input type="text" class="form-control" name="date1" id="date">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Saat:</label>
+                        <select class="form-control" name="times" id="times">
+                            <option value="0"> Saat Seçiniz...</option>
+                            
+                        </select>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-toggle="modal"  data-target="#myModal"  onclick="Continue()" @*data-dismiss="modal"*@> Devam</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+
+    @*Restorant Listesi Datatable*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#datatable').DataTable({
+                responsive: true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.12/i18n/Turkish.json"
+                },
+
+                "sDecimal": ",",
+                "sEmptyTable": "Tabloda herhangi bir veri mevcut değil",
+                "sInfo": "_TOTAL_ kayıttan _START_ - _END_ arasındaki kayıtlar gösteriliyor",
+                "sInfoEmpty": "Kayıt yok",
+                "sInfoFiltered": "(_MAX_ kayıt içerisinden bulunan)",
+                "sInfoPostFix": "",
+                "sInfoThousands": ".",
+                "sLengthMenu": "Sayfada _MENU_ kayıt göster",
+                "sLoadingRecords": "Yükleniyor...",
+                "sProcessing": "İşleniyor...",
+                "sSearch": "Ara:",
+                "sZeroRecords": "Eşleşen kayıt bulunamadı",
+                "oPaginate": {
+                    "sFirst": "İlk",
+                    "sLast": "Son",
+                    "sNext": "Sonraki",
+                    "sPrevious": "Önceki"
+                },
+                "oAria": {
+                    "sSortAscending": ": artan sütun sıralamasını aktifleştir",
+                    "sSortDescending": ": azalan sütun soralamasını aktifleştir"
+                }
+            });
+        });
+    </script>
+    <script>
+       
+        //$('.datepicker').datepicker({
+        //    format: 'mm/dd/yyyy',
+        //    startDate: '-3d'
+        //})
+
+        function Continue()
+        {
+            $("#myModalDateControl .close").click();
+            $("input[name='restorantName']").val($("input[name='code']").val());
+            $("input[name='date']").val($("input[name='date1']").val());
+            $("input[name='time']").val($("#times").val());   
+        }
+
+        
+        function RezervasyonPopup(unitId, unitKey) {
+
+
+            var currentdate = new Date(); // günün tarihine göre rezervasyon işlemi
+            var datetime = currentdate.getDate() + "/"
+                + (currentdate.getMonth() + 1) + "/"
+                + currentdate.getFullYear();
+          
+
+            $.ajax({
+                url: '@Url.Action("AlacaCarteList", "Home")',
+                type: 'POST',
+                data: { unitID: unitId, unitKey: unitKey, DateTime: datetime },
+                //datatype: 'json',
+                success: function (result) {
+                    debugger;
+                    $('#RestorantName').val(result.result[0].code);
+                    $('#date').val(result.date);
+
+                    $("input[name$='code']").val(result.result[0].code);
+                    $("input[name$='description']").val(result.result[0].description);
+                    $("input[name$='hotelId']").val(result.result[0].hotelId);
+                    $("input[name$='unitId']").val(result.result[0].unitId);
+                    $("input[name$='unitKey']").val(result.result[0].unitKey);
+                    $('#times').empty();
+                    for (i = 0; i < result.result[0].paramz.length; i++)
+                    { 
+                        $('#times').append( '<option value="'+result.result[0].paramz[i].desc+'">'+result.result[0].paramz[i].desc+'</option>' );
+                    }                
+                   
+                }
+            });
+            debugger;
+
+
+        }
+
+
+        function RezervasyonSave() {
+
+            debugger;
+            var data = {};
+            var data1 = {};
+            $('#myForm').serializeArray().map(function (x) { data[x.name] = x.value; });            
+            $('#myForm1').serializeArray().map(function (x) { data1[x.name] = x.value; });
+            
+
+            var model = {};
+            model.hotelId=data1.hotelId;
+            model.unitId=data1.unitId;
+            model.date=data1.date;
+            model.time=data1.times;
+            model.reservationAdult=data.reservationAdult;
+            model.reservationChild=data.reservationChild;
+            model.reservationNote=data.reservationNote;
+            model.guest={}
+            
+            model.guest.hotelCode="GGR";
+            model.guest.roomNumber="999";
+            model.guest.folio=123;
+            model.guest.firstName=data.firstName;
+            model.guest.lastName=data.lastName;
+            model.guest.title="MR";
+            model.guest.gender=data.gender;
+            model.guest.country= "TR";
+            model.guest.adult= 1,
+            model.guest.child= 0,
+            model.guest.arrivalDate=data1.date,
+            model.guest.departureDate = data1.date,
+            model.guest.panTip= "VIP";
+            model.guest.nights= 10;
+
+            debugger;
+
+            $.ajax({
+                url: '@Url.Action("RezervasyonSave", "Home")',
+                type: 'POST',
+                data: { model: model },
+                success: function (data) {
+                   
+                    if (data.success == true || data.success == 'true')
+                    {
+                        alert("Kayıt Başarılı");
+                        $('#myModal .close').click();
+
+                    }
+                    else {
+                        alert("Kayıt İşlemi sırasında hata oluştu");
+
+                    }
+
+
+                    debugger;
+                }
+            });
+        }
+    </script>
+}

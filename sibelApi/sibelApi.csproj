@@ -5,12 +5,30 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Content Include="Controllers\HomeController.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Content\bootstrap.css" />
+    <None Include="wwwroot\Content\bootstrap.min.css" />
+    <None Include="wwwroot\Content\datatable\dataTables.responsive.css" />
+    <None Include="wwwroot\Content\datatable\dataTables.responsive.js" />
+    <None Include="wwwroot\Content\datatable\jquery-1.9.1.js" />
+    <None Include="wwwroot\Content\datatable\jquery-ui.css" />
+    <None Include="wwwroot\Content\datatable\jquery-ui.js" />
+    <None Include="wwwroot\Content\datatable\jquery.dataTables.css" />
+    <None Include="wwwroot\Content\datatable\jquery.dataTables.min.js" />
+    <None Include="wwwroot\Content\Site.css" />
   </ItemGroup>
 
 </Project>
