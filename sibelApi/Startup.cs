@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
@@ -14,8 +15,14 @@ namespace sibelApi
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();  
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -23,27 +30,21 @@ namespace sibelApi
         {
             if (env.IsDevelopment())
             {
+                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
-
-            app.Run(async (context) =>
+            else
             {
-                string token = sibel.Login("test", "123456", "146116");
-                if (token != "-1")
-                {
-                    var loginResult = JsonConvert.DeserializeObject<Entity.Login>(token);
-                    var restoranListe = sibel.RestoranListesiGetir(loginResult.token);
-                    var alacarteListe = sibel.AlacarteListeGetir("14", "07a8371e-d72f-477c-9fe5-6324d524b5d6", DateTime.Now, loginResult.token);
-                    var rezervasyon = sibel.RezervasyonYap(new Entity.Rezervasyon(), loginResult.token);
-                    await context.Response.WriteAsync("test");
-                }
-                else
-                {
-                    await context.Response.WriteAsync("Kullanıcı adı şifreniz hatalı!");
+                app.UseExceptionHandler("/Home/Error");
+            }
 
-                    //Geçersiz kullanıcı adı & şifre
-                }
+            app.UseStaticFiles();
 
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
